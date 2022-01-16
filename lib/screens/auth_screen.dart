@@ -12,6 +12,7 @@ class AuthScreen extends StatelessWidget {
     bool isLogin,
     BuildContext context,
   ) async {
+    // ignore: unused_local_variable
     UserCredential authResult;
     try {
       if (isLogin) {
