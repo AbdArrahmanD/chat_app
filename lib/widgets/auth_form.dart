@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
+  final bool isLoading;
   final void Function(
     String email,
     String password,
@@ -9,7 +10,8 @@ class AuthForm extends StatefulWidget {
     BuildContext context,
   ) submitFun;
   const AuthForm(
-    this.submitFun, {
+    this.submitFun,
+    this.isLoading, {
     Key? key,
   }) : super(key: key);
 
@@ -88,32 +90,39 @@ class _AuthFormState extends State<AuthForm> {
                       labelStyle: TextStyle(fontSize: 20)),
                 ),
                 const SizedBox(height: 12),
-                ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.pink),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ))),
-                  onPressed: submit,
-                  child: Text(
-                    isLogin ? 'Login' : 'Sign Up',
-                    style: const TextStyle(fontSize: 15),
+                if (widget.isLoading) const CircularProgressIndicator(),
+                if (!widget.isLoading)
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.pink),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ))),
+                    onPressed: () {
+                      submit();
+                      print('isLoading : ${widget.isLoading}');
+                    },
+                    child: Text(
+                      isLogin ? 'Login' : 'Sign Up',
+                      style: const TextStyle(fontSize: 15),
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      isLogin = !isLogin;
-                    });
-                  },
-                  child: Text(
-                    isLogin
-                        ? 'Create new account'
-                        : 'I already have an account',
-                    style: const TextStyle(color: Colors.pink),
+                if (!widget.isLoading)
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        isLogin = !isLogin;
+                      });
+                    },
+                    child: Text(
+                      isLogin
+                          ? 'Create new account'
+                          : 'I already have an account',
+                      style: const TextStyle(color: Colors.pink),
+                    ),
                   ),
-                ),
               ],
             ),
           ),
