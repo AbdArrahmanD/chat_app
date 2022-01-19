@@ -19,9 +19,10 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Chat App',
       theme: ThemeData(
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.pink),
         primarySwatch: Colors.pink,
         backgroundColor: Colors.pink,
-        scaffoldBackgroundColor: Colors.pink,
+        // scaffoldBackgroundColor: Colors.pink,
         colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: Colors.deepPurple,
         ),
