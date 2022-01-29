@@ -1,4 +1,6 @@
+import 'package:chat_app/widgets/chats/message_bubble.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class Messages extends StatelessWidget {
@@ -8,23 +10,30 @@ class Messages extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('chat')
+            .collection('chats')
             .orderBy('createdAt', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                CircularProgressIndicator(),
+              ],
+            );
           }
           final docs = snapshot.data!.docs;
+          final currentUser = FirebaseAuth.instance.currentUser;
           return ListView.builder(
               reverse: true,
               itemCount: docs.length,
-              itemBuilder: (context, index) {
-                return Text(
-                  docs[index]['text'],
-                  style: const TextStyle(fontSize: 35),
-                );
-              });
+              itemBuilder: (context, index) => MessagesBubble(
+                    docs[index]['userName'],
+                    docs[index]['text'],
+                    currentUser?.uid == docs[index]['userId'],
+                    key: ValueKey(docs[index].id),
+                  ));
         });
   }
 }
