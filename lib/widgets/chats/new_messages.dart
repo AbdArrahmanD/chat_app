@@ -40,7 +40,7 @@ class _NewMessageState extends State<NewMessage> {
   }
 
   void sendMessage() async {
-    final currentUser = await FirebaseAuth.instance.currentUser;
+    final currentUser = FirebaseAuth.instance.currentUser;
     final userData = await FirebaseFirestore.instance
         .collection('users')
         .doc(currentUser?.uid)
