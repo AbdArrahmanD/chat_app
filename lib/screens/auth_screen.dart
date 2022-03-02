@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:chat_app/widgets/auth_form.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -19,6 +22,7 @@ class _AuthScreenState extends State<AuthScreen> {
     String email,
     String password,
     String userName,
+    File image,
     bool isLogin,
     BuildContext context,
   ) async {
@@ -34,12 +38,19 @@ class _AuthScreenState extends State<AuthScreen> {
       } else {
         authResult = await auth.createUserWithEmailAndPassword(
             email: email, password: password);
+        final ref = FirebaseStorage.instance
+            .ref()
+            .child('usersImage')
+            .child(authResult.user!.uid + '.jpg');
+        await ref.putFile(image);
+        final url = ref.getDownloadURL();
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user!.uid)
             .set({
           'userName': userName,
           'password': password,
+          'image_url': url,
         });
       }
     } on FirebaseAuthException catch (e) {
@@ -59,6 +70,10 @@ class _AuthScreenState extends State<AuthScreen> {
           isLoading = false;
         });
         print('e : $e');
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: const Text('Faild,pleas try again.'),
+          backgroundColor: Theme.of(context).errorColor,
+        ));
       }
     }
   }

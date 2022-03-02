@@ -19,7 +19,11 @@ class _PickImageState extends State<PickImage> {
   File? image;
   final ImagePicker _picker = ImagePicker();
   void chooseImage(ImageSource src) async {
-    XFile? pickedImage = await _picker.pickImage(source: src);
+    XFile? pickedImage = await _picker.pickImage(
+      source: src,
+      imageQuality: 50,
+      maxWidth: 150,
+    );
     if (pickedImage != null) {
       setState(() {
         image = File(pickedImage.path);
