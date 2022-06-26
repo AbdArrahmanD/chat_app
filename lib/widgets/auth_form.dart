@@ -9,7 +9,7 @@ class AuthForm extends StatefulWidget {
     String email,
     String password,
     String username,
-    File image,
+    File? image,
     bool isLogin,
     BuildContext context,
   ) submitFun;
@@ -47,8 +47,11 @@ class _AuthFormState extends State<AuthForm> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                PickImage(pickedImage),
+                !isLogin ? PickImage(pickedImage) : Container(),
                 TextFormField(
+                  textCapitalization: TextCapitalization.none,
+                  autocorrect: false,
+                  enableSuggestions: false,
                   key: const ValueKey('email'),
                   validator: (val) {
                     if (val!.isEmpty || !val.contains('@')) {
@@ -67,6 +70,9 @@ class _AuthFormState extends State<AuthForm> {
                 ),
                 if (!isLogin)
                   TextFormField(
+                    textCapitalization: TextCapitalization.words,
+                    autocorrect: true,
+                    enableSuggestions: false,
                     key: const ValueKey('username'),
                     validator: (val) {
                       if (val!.isEmpty || val.length < 4) {
@@ -144,7 +150,7 @@ class _AuthFormState extends State<AuthForm> {
   void submit() {
     FocusScope.of(context).unfocus();
     final isValid = _formKey.currentState!.validate();
-    if (userImageFile == null) {
+    if (!isLogin && userImageFile == null) {
       // ignore: deprecated_member_use
       Scaffold.of(context).showSnackBar(SnackBar(
         content: const Text('Please Pick an Image'),
@@ -161,7 +167,7 @@ class _AuthFormState extends State<AuthForm> {
         email.trim(),
         password.trim(),
         userName.trim(),
-        userImageFile!,
+        !isLogin ? userImageFile! : null,
         isLogin,
         context,
       );
